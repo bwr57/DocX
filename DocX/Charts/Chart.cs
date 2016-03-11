@@ -12,6 +12,10 @@ namespace Novacode
     /// </summary>
     public abstract class Chart
     {
+        private const string CAT_AXIS_ID = "148921728";
+        private const string VAL_AXIS_ID = "154227840";
+        private const string SERIA_AXIS_ID = "-1278372144";
+
         protected XElement ChartXml { get; private set; }
         protected XElement ChartRootXml { get; private set; }
 
@@ -122,6 +126,8 @@ namespace Novacode
         /// </summary>
         public virtual Boolean IsAxisExist { get { return true; } }
 
+        protected Boolean IsSurfacePlot { get; set; }
+
         #endregion
 
         /// <summary>
@@ -170,17 +176,26 @@ namespace Novacode
                     ChartRootXml.Element(XName.Get("dispBlanksAs", DocX.c.NamespaceName)), value);
             }
         }
-
         /// <summary>
         /// Create an Chart for this document
         /// </summary>        
         public Chart()
+            :this(null)
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Create an Chart for this document
+        /// </summary>        
+        public Chart(string xAxisTitle)
         {
             // Create global xml
             Xml = XDocument.Parse
                 (@"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>
                    <c:chartSpace xmlns:c=""http://schemas.openxmlformats.org/drawingml/2006/chart"" xmlns:a=""http://schemas.openxmlformats.org/drawingml/2006/main"" xmlns:r=""http://schemas.openxmlformats.org/officeDocument/2006/relationships"">  
                        <c:roundedCorners val=""0""/>
+                       <c:style val=""2""/>
                        <c:chart>
                            <c:autoTitleDeleted val=""0""/>
                            <c:plotVisOnly val=""1""/>
@@ -214,26 +229,41 @@ namespace Novacode
             // if axes exists, create their
             if (IsAxisExist)
             {
-                CategoryAxis = new CategoryAxis("148921728");
-                ValueAxis = new ValueAxis("154227840");
+                CategoryAxis = new CategoryAxis(CAT_AXIS_ID, VAL_AXIS_ID, xAxisTitle);
+                ValueAxis = new ValueAxis(VAL_AXIS_ID, CAT_AXIS_ID);
+                SeriaAxis seriaAxis = new SeriaAxis(SERIA_AXIS_ID, VAL_AXIS_ID);
 
                 XElement axIDcatXml = XElement.Parse(String.Format(
                     @"<c:axId val=""{0}"" xmlns:c=""http://schemas.openxmlformats.org/drawingml/2006/chart""/>", CategoryAxis.Id));
                 XElement axIDvalXml = XElement.Parse(String.Format(
                     @"<c:axId val=""{0}"" xmlns:c=""http://schemas.openxmlformats.org/drawingml/2006/chart""/>", ValueAxis.Id));
+                XElement axIDseriaXml = XElement.Parse(String.Format(
+                    @"<c:axId val=""{0}"" xmlns:c=""http://schemas.openxmlformats.org/drawingml/2006/chart""/>", seriaAxis.Id));
 
                 // Sourceman: seems to be necessary to keep track of the order of elements as defined in the schema (Word 2013)
                 var insertPoint = ChartXml.Element(XName.Get("gapWidth", DocX.c.NamespaceName));
                 if (insertPoint != null) {
                     insertPoint.AddAfterSelf(axIDvalXml);
                     insertPoint.AddAfterSelf(axIDcatXml);
+                    if(IsSurfacePlot)
+                    {
+                        insertPoint.AddAfterSelf(axIDseriaXml);
+                    }
                 } else {
                     ChartXml.Add(axIDcatXml);
                     ChartXml.Add(axIDvalXml);
+                    if (IsSurfacePlot)
+                    {
+                        ChartXml.Add(axIDseriaXml);
+                    }
                 }
 
                 plotAreaXml.Add(CategoryAxis.Xml);
                 plotAreaXml.Add(ValueAxis.Xml);
+                if(IsSurfacePlot)
+                {
+                    plotAreaXml.Add(seriaAxis.Xml);
+                }
             }
 
             ChartRootXml = Xml.Root.Element(XName.Get("chart", DocX.c.NamespaceName));

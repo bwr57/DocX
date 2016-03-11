@@ -99,6 +99,7 @@
     <Compile Include="Charts\Chart.cs" />
     <Compile Include="Charts\LineChart.cs" />
     <Compile Include="Charts\PieChart.cs" />
+    <Compile Include="Charts\SurfaceChart.cs" />
     <Compile Include="Charts\XElementHelpers.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="DocumentTypes.cs" />

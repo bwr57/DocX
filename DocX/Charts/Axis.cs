@@ -35,6 +35,7 @@ namespace Novacode
                 else
                     Xml.Element(XName.Get("delete", DocX.c.NamespaceName)).Attribute(XName.Get("val")).Value = "1";
             }
+
         }
 
         /// <summary>
@@ -49,6 +50,28 @@ namespace Novacode
 
         public Axis(String id)
         { }
+        protected virtual string GetTitleXml(string title)
+        {
+            if (title == null)
+                return "";
+            return String.Format(@"<c:title>
+                        <c:tx>
+                            <c:rich>
+                                <a:bodyPr/>
+                                <a:lstStyle/>
+                                <a:p>
+                                    <a:pPr>
+                                        <a:defRPr/>
+                                    </a:pPr>
+                                    <a:r>
+                                        <a:t>{0}</a:t>
+                                    </a:r>
+                                </a:p>
+                            </c:rich>
+                        </c:tx>
+                        <c:overlay val=""0""/>
+                    </c:title>", title);
+        }
     }
 
     /// <summary>
@@ -60,7 +83,7 @@ namespace Novacode
             : base(xml)
         { }
 
-        public CategoryAxis(String id)
+        public CategoryAxis(String id, String valAxisId, string title)
             : base(id)
         {
             Xml = XElement.Parse(String.Format(
@@ -71,16 +94,17 @@ namespace Novacode
                 </c:scaling>
                 <c:delete val=""0""/>
                 <c:axPos val=""b""/>
+                {2}
                 <c:majorTickMark val=""out""/>
                 <c:minorTickMark val=""none""/>
                 <c:tickLblPos val=""nextTo""/>
-                <c:crossAx val=""154227840""/>
+                <c:crossAx val=""{1}""/>
                 <c:crosses val=""autoZero""/>
                 <c:auto val=""1""/>
                 <c:lblAlgn val=""ctr""/>
                 <c:lblOffset val=""100""/>
                 <c:noMultiLvlLbl val=""0""/>
-              </c:catAx>", id));
+              </c:catAx>", id, valAxisId, GetTitleXml(title)));
         }
     }
 
@@ -93,7 +117,7 @@ namespace Novacode
             : base(xml)
         { }
 
-        public ValueAxis(String id)
+        public ValueAxis(String id, String catAxisId)
             : base(id)
         {
             Xml = XElement.Parse(String.Format(
@@ -109,10 +133,40 @@ namespace Novacode
                 <c:majorTickMark val=""out""/>
                 <c:minorTickMark val=""none""/>
                 <c:tickLblPos val=""nextTo""/>
-                <c:crossAx val=""148921728""/>
+                <c:crossAx val=""{1}""/>
                 <c:crosses val=""autoZero""/>
                 <c:crossBetween val=""between""/>
-              </c:valAx>", id));
+              </c:valAx>", id, catAxisId));
         }
     }
+
+    /// <summary>
+    /// Represents Seria Axes
+    /// </summary>
+    public class SeriaAxis : Axis
+    {
+        internal SeriaAxis(XElement xml)
+            : base(xml)
+        { }
+
+        public SeriaAxis(String id, String valAxisId)
+            : base(id)
+        {
+            Xml = XElement.Parse(String.Format(
+              @"<c:serAx xmlns:c=""http://schemas.openxmlformats.org/drawingml/2006/chart"">
+                <c:axId val=""{0}""/>
+                <c:scaling>
+                  <c:orientation val=""minMax""/>
+                </c:scaling>
+                <c:delete val=""0""/>
+                <c:axPos val=""b""/>
+                <c:majorTickMark val=""out""/>
+                <c:minorTickMark val=""none""/>
+                <c:tickLblPos val=""nextTo""/>
+                <c:crossAx val=""{1}""/>
+                <c:crosses val=""autoZero""/>
+              </c:serAx>", id, valAxisId));
+        }
+    }
+
 }

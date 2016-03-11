@@ -55,6 +55,38 @@ namespace Novacode
             XmlNameAttribute a = (XmlNameAttribute)fi.GetCustomAttributes(typeof(XmlNameAttribute), false).First();
             return a.XmlName;
         }
+
+        /// <summary>
+        /// Convert value to integer value and set it into XElement
+        /// </summary>
+        public static int GetIntValue(XElement element, string tagName, string nameSpace)
+        {
+            if (element == null)
+                return 0;
+            element = element.Element(XName.Get(tagName, nameSpace));
+            if (element == null)
+                return 0;
+            int result = 0;
+            if (Int32.TryParse(element.Attribute(XName.Get("val")).Value, out result))
+                return result;
+            return 0;
+        }
+
+
+        /// <summary>
+        /// Convert value to integer value and set it into XElement
+        /// </summary>
+        /// <typeparam name="T">Enum type</typeparam> 
+        public static void SetIntValueFromEnum<T>(XElement element, string tagName, string nameSpace, T value)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+            element = element.Element(XName.Get(tagName, nameSpace));
+            if (element == null)
+                throw new ArgumentNullException("element");
+            element.Attribute(XName.Get("val")).Value = Convert.ToInt32(value).ToString();
+        }
+
     }
 
     /// <summary>
