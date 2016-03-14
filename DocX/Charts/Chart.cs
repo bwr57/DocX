@@ -12,8 +12,17 @@ namespace Novacode
     /// </summary>
     public abstract class Chart
     {
+        /// <summary>
+        /// ID of category axis
+        /// </summary>
         private const string CAT_AXIS_ID = "148921728";
+        /// <summary>
+        /// ID of value axis
+        /// </summary>
         private const string VAL_AXIS_ID = "154227840";
+        /// <summary>
+        /// ID of seria axis
+        /// </summary>
         private const string SERIA_AXIS_ID = "-1278372144";
 
         protected XElement ChartXml { get; private set; }
@@ -126,6 +135,9 @@ namespace Novacode
         /// </summary>
         public virtual Boolean IsAxisExist { get { return true; } }
 
+        /// <summary>
+        /// Flag of surface chart with 3 axises
+        /// </summary>
         protected Boolean IsSurfacePlot { get; set; }
 
         #endregion
@@ -180,7 +192,7 @@ namespace Novacode
         /// Create an Chart for this document
         /// </summary>        
         public Chart()
-            :this(null)
+            :this(null, null, null)
         {
             ;
         }
@@ -188,7 +200,10 @@ namespace Novacode
         /// <summary>
         /// Create an Chart for this document
         /// </summary>        
-        public Chart(string xAxisTitle)
+        /// <param name="catAxisTitle">Category axis title</param>
+        /// <param name="valAxisTitle">Value axis title</param>
+        /// <param name="serAxisTitle">Seria axis title</param>
+        public Chart(string catAxisTitle, string valAxisTitle, string serAxisTitle)
         {
             // Create global xml
             Xml = XDocument.Parse
@@ -229,9 +244,9 @@ namespace Novacode
             // if axes exists, create their
             if (IsAxisExist)
             {
-                CategoryAxis = new CategoryAxis(CAT_AXIS_ID, VAL_AXIS_ID, xAxisTitle);
-                ValueAxis = new ValueAxis(VAL_AXIS_ID, CAT_AXIS_ID);
-                SeriaAxis seriaAxis = new SeriaAxis(SERIA_AXIS_ID, VAL_AXIS_ID);
+                CategoryAxis = new CategoryAxis(CAT_AXIS_ID, VAL_AXIS_ID, catAxisTitle);
+                ValueAxis = new ValueAxis(VAL_AXIS_ID, CAT_AXIS_ID, valAxisTitle);
+                SeriaAxis seriaAxis = new SeriaAxis(SERIA_AXIS_ID, VAL_AXIS_ID, serAxisTitle);
 
                 XElement axIDcatXml = XElement.Parse(String.Format(
                     @"<c:axId val=""{0}"" xmlns:c=""http://schemas.openxmlformats.org/drawingml/2006/chart""/>", CategoryAxis.Id));

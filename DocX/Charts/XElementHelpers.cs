@@ -57,8 +57,12 @@ namespace Novacode
         }
 
         /// <summary>
-        /// Convert value to integer value and set it into XElement
+        /// Convert value of tag of xml element to integer value
         /// </summary>
+        /// <param name="element">Xml element</param>
+        /// <param name="tagName">Tag name</param>
+        /// <param name="nameSpace">Xml namespace</param>
+        /// <returns>Integer value of tag or 0, if tag not exists</returns>
         public static int GetIntValue(XElement element, string tagName, string nameSpace)
         {
             if (element == null)
@@ -74,8 +78,12 @@ namespace Novacode
 
 
         /// <summary>
-        /// Convert value to integer value and set it into XElement
+        /// Convert integer value and set it into XElement
         /// </summary>
+        /// <param name="element">Xml element</param>
+        /// <param name="tagName">Tag name</param>
+        /// <param name="nameSpace">Xml namespace</param>
+        /// <param name="value">Integer value</param>
         /// <typeparam name="T">Enum type</typeparam> 
         public static void SetIntValueFromEnum<T>(XElement element, string tagName, string nameSpace, T value)
         {

@@ -10,6 +10,26 @@ namespace Novacode
     public class BarChart : Chart
     {
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        public BarChart()
+            : base()
+        {
+
+        }
+
+        /// <summary>
+        /// Constructor with defiation of axis titles
+        /// </summary>
+        /// <param name="catAxisTitle">Category axis title</param>
+        /// <param name="valAxisTitle">Value axis title</param>
+        public BarChart(string catAxisTitle, string valAxisTitle)
+            : base(catAxisTitle, valAxisTitle, null)
+        {
+
+        }
+
+        /// <summary>
         /// Specifies the possible directions for a bar chart.
         /// </summary>
         public BarDirection BarDirection

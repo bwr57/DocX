@@ -9,6 +9,26 @@ namespace Novacode
     public class LineChart: Chart
     {
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        public LineChart()
+            : base()
+        {
+
+        }
+
+        /// <summary>
+        /// Constructor with defiation of axis titles
+        /// </summary>
+        /// <param name="catAxisTitle">Category axis title</param>
+        /// <param name="valAxisTitle">Value axis title</param>
+        public LineChart(string catAxisTitle, string valAxisTitle)
+            : base(catAxisTitle, valAxisTitle, null)
+        {
+
+        }
+
+        /// <summary>
         /// Specifies the kind of grouping for a column, line, or area chart.
         /// </summary>
         public Grouping Grouping
