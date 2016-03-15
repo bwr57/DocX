@@ -4337,6 +4337,22 @@ namespace Novacode
             return toc;
         }
 
+        public virtual void InsertSection(Orientation orientation)
+        {
+            Orientation currentOrientation = this.PageLayout.Orientation;
+            if (orientation == currentOrientation)
+                return;
+            this.PageLayout.Orientation = orientation;
+            XElement sectXml = new XElement(XName.Get("sectPr", DocX.w.NamespaceName), new XElement(XName.Get("pgSz", DocX.w.NamespaceName), new XAttribute(DocX.w + "orient", "continuous")));
+            PageLayout pageLayout = new PageLayout(null, sectXml);
+            pageLayout.Orientation = currentOrientation;
+            var newParagraphSection = new XElement
+            (
+                XName.Get("p", DocX.w.NamespaceName), new XElement(XName.Get("pPr", DocX.w.NamespaceName), sectXml)
+            );
+            Xml.Add(newParagraphSection);
+        }
+
         #region IDisposable Members
 
         /// <summary>
